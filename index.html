@@ -12,7 +12,7 @@
   <div id="root"></div>
 
   <!-- Netlify Forms Static Detection -->
-  <form name="order" netlify netlify-honeypot="bot-field" hidden>
+  <form name="order" netlify netlify-honeypot="bot-field" action="/order?success=true" hidden>
     <input type="hidden" name="form-name" value="order" />
     <input type="text" name="name" />
     <input type="email" name="email" />
