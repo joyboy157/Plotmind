@@ -1,0 +1,40 @@
+.footer {
+    padding: 40px 0;
+    background: var(--white);
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    margin-top: auto;
+}
+
+.content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.copyright {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.links {
+    display: flex;
+    gap: 24px;
+}
+
+.link {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    transition: color 0.2s ease;
+}
+
+.link:hover {
+    color: var(--text-color);
+}
+
+@media (max-width: 600px) {
+    .content {
+        flex-direction: column;
+        gap: 16px;
+        text-align: center;
+    }
+}

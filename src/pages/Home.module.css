@@ -1,0 +1,111 @@
+.home {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-top: 60px;
+    /* Navbar height */
+}
+
+.hero {
+    position: relative;
+    padding: 120px 0;
+    text-align: center;
+    overflow: hidden;
+}
+
+.heroContent {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+}
+
+.title {
+    font-size: 4rem;
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: var(--text-color);
+}
+
+.gradientText {
+    background: linear-gradient(135deg, #0071e3 0%, #9b51e0 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.subtitle {
+    font-size: 1.5rem;
+    color: var(--text-secondary);
+    max-width: 600px;
+    font-weight: 400;
+}
+
+.ctaGroup {
+    display: flex;
+    gap: 16px;
+    margin-top: 24px;
+}
+
+.primaryBtn {
+    background: var(--text-color);
+    color: var(--white);
+    padding: 14px 32px;
+    border-radius: 30px;
+    font-size: 1.1rem;
+    font-weight: 500;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.primaryBtn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.secondaryBtn {
+    background: transparent;
+    color: var(--text-color);
+    padding: 14px 32px;
+    border-radius: 30px;
+    font-size: 1.1rem;
+    font-weight: 500;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    transition: background 0.2s ease;
+}
+
+.secondaryBtn:hover {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.backgroundBlur {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(0, 113, 227, 0.15) 0%, rgba(155, 81, 224, 0.05) 50%, transparent 70%);
+    filter: blur(60px);
+    z-index: 1;
+    pointer-events: none;
+}
+
+@media (max-width: 768px) {
+    .title {
+        font-size: 2.5rem;
+    }
+
+    .subtitle {
+        font-size: 1.1rem;
+        padding: 0 20px;
+    }
+
+    .backgroundBlur {
+        width: 100%;
+        height: 100%;
+    }
+}
