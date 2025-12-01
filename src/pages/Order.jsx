@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import styles from './Order.module.css';
 import Toast from '../components/Toast';
 
@@ -12,6 +13,17 @@ const Order = () => {
     });
     const [showToast, setShowToast] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const location = useLocation();
+
+    // Check for success query param on mount (after redirect)
+    useEffect(() => {
+        const params = new URLSearchParams(location.search);
+        if (params.get('success') === 'true') {
+            setShowToast(true);
+            // Clean up URL
+            window.history.replaceState({}, '', '/order');
+        }
+    }, [location]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -19,31 +31,8 @@ const Order = () => {
     };
 
     const handleSubmit = (e) => {
-        e.preventDefault();
+        // We let the browser submit naturally, but we set state to show "Processing..."
         setIsSubmitting(true);
-
-        const form = e.target;
-        const data = new FormData(form);
-
-        fetch("/", {
-            method: "POST",
-            headers: { "Content-Type": "application/x-www-form-urlencoded" },
-            body: new URLSearchParams(data).toString(),
-        })
-            .then(() => {
-                setShowToast(true);
-                setFormData({
-                    name: '',
-                    email: '',
-                    size: 'A4',
-                    style: 'Color',
-                    notes: ''
-                });
-                form.reset();
-                setTimeout(() => setShowToast(false), 3000);
-            })
-            .catch((error) => alert(error))
-            .finally(() => setIsSubmitting(false));
     };
 
     return (
@@ -59,19 +48,15 @@ const Order = () => {
                 </div>
 
                 {/* 
-          NETLIFY FORMS SETUP:
-          - The form must have `name="order"`.
-          - `data-netlify="true"` enables Netlify Forms.
-          - `data-netlify-honeypot="bot-field"` adds spam protection.
-          - The hidden input `form-name` is required.
-          
-          EMAIL NOTIFICATIONS:
-          - By default, submissions are sent to the site owner's email (configured in Netlify Dashboard).
-          - To change the recipient, go to Netlify Site Settings > Forms > Form Notifications.
+          NETLIFY FORMS SETUP (Native Submission):
+          - `action="/order?success=true"`: Redirects back here after success.
+          - `method="POST"`: Standard browser submission.
+          - `encType="multipart/form-data"`: Required for file uploads.
         */}
                 <form
                     name="order"
                     method="POST"
+                    action="/order?success=true"
                     data-netlify="true"
                     data-netlify-honeypot="bot-field"
                     encType="multipart/form-data"
@@ -79,6 +64,7 @@ const Order = () => {
                     style={{ animationDelay: '0.2s' }}
                     onSubmit={handleSubmit}
                 >
+                    {/* Required hidden fields */}
                     <input type="hidden" name="form-name" value="order" />
                     <p hidden>
                         <label>
@@ -176,7 +162,7 @@ const Order = () => {
                     </div>
 
                     <button type="submit" className={styles.submitBtn} disabled={isSubmitting}>
-                        {isSubmitting ? 'Submitting...' : 'Submit Request'}
+                        {isSubmitting ? 'Processing...' : 'Submit Request'}
                     </button>
                 </form>
             </div>
