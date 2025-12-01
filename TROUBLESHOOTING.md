@@ -24,8 +24,8 @@ Even if you didn't get an email, Netlify might have received the submission.
     - **Yes**: The form works, but your Email Notification settings (Step 2) are wrong or the email went to Spam.
     - **No**: The form submission failed. Ensure you are testing on the **deployed URL** (e.g., `https://your-site.netlify.app`), NOT localhost.
 
-## 4. Native Submission
-We have switched to **native browser submission** to ensure file uploads work reliably.
-- The form now submits directly to Netlify servers.
-- The page will reload/redirect to `/order?success=true` after submission.
-- You should see a "Processing..." state on the button before the reload.
+## 4. Submission Method
+We are using **AJAX (fetch)** to submit the form.
+- This allows us to stay on the same page and show a "Success" toast.
+- We send `FormData` directly to support file uploads.
+- If it fails, check the browser console for errors.

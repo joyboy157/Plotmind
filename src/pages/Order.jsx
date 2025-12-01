@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import React, { useState } from 'react';
 import styles from './Order.module.css';
 import Toast from '../components/Toast';
 
@@ -13,26 +12,47 @@ const Order = () => {
     });
     const [showToast, setShowToast] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const location = useLocation();
-
-    // Check for success query param on mount (after redirect)
-    useEffect(() => {
-        const params = new URLSearchParams(location.search);
-        if (params.get('success') === 'true') {
-            setShowToast(true);
-            // Clean up URL
-            window.history.replaceState({}, '', '/order');
-        }
-    }, [location]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
     };
 
-    const handleSubmit = (e) => {
-        // We let the browser submit naturally, but we set state to show "Processing..."
+    const handleSubmit = async (e) => {
+        e.preventDefault();
         setIsSubmitting(true);
+
+        const form = e.target;
+        const data = new FormData(form);
+
+        try {
+            await fetch("/", {
+                method: "POST",
+                // IMPORTANT: Do NOT set Content-Type header when sending FormData with files.
+                // The browser automatically sets it to multipart/form-data with the correct boundary.
+                body: data,
+            });
+
+            // Success
+            setShowToast(true);
+            setFormData({
+                name: '',
+                email: '',
+                size: 'A4',
+                style: 'Color',
+                notes: ''
+            });
+            form.reset(); // Reset file input and other uncontrolled fields
+
+            // Hide toast after 3 seconds
+            setTimeout(() => setShowToast(false), 3000);
+
+        } catch (error) {
+            console.error("Form submission error:", error);
+            alert("Something went wrong. Please try again.");
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     return (
@@ -48,23 +68,21 @@ const Order = () => {
                 </div>
 
                 {/* 
-          NETLIFY FORMS SETUP (Native Submission):
-          - `action="/order?success=true"`: Redirects back here after success.
-          - `method="POST"`: Standard browser submission.
-          - `encType="multipart/form-data"`: Required for file uploads.
+          NETLIFY FORMS SETUP (AJAX):
+          - `name="order"` matches the static form in index.html.
+          - `data-netlify="true"` is required.
+          - `onSubmit` handles the AJAX request.
         */}
                 <form
                     name="order"
                     method="POST"
-                    action="/order?success=true"
                     data-netlify="true"
                     data-netlify-honeypot="bot-field"
-                    encType="multipart/form-data"
                     className={`${styles.form} glass fade-in`}
                     style={{ animationDelay: '0.2s' }}
                     onSubmit={handleSubmit}
                 >
-                    {/* Required hidden fields */}
+                    {/* Hidden fields for Netlify */}
                     <input type="hidden" name="form-name" value="order" />
                     <p hidden>
                         <label>
